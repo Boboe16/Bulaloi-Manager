@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>379</width>
+    <width>375</width>
     <height>390</height>
    </rect>
   </property>
@@ -96,7 +96,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QComboBox" name="comboBox_2">
+     <widget class="QComboBox" name="appCategory">
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -105,7 +105,17 @@
       </property>
       <item>
        <property name="text">
-        <string>Category</string>
+        <string>Game Category</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Role-playing</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Fps</string>
        </property>
       </item>
       <item>
@@ -126,6 +136,41 @@
       <item>
        <property name="text">
         <string>Arcade</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Addon and mods</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>App Category</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Phone editor</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Task-app management</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Video player and editor</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Music</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>Productivity</string>
        </property>
       </item>
      </widget>
@@ -153,7 +198,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="addButton">
    <property name="geometry">
     <rect>
      <x>290</x>

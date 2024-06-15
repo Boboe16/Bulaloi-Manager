@@ -32,57 +32,57 @@ import json
 
 # Create json files in `apps` directory. DONEEE
 # We could use `class` to create objects and just convert them into json then create it
-# class AppOrGame:
-#     def __init__(self, appOrGame, appPicture, appName, appRating, appDownloadLink, appDescription, appCategory, appVersion=None, appRequirement=None, appSize=None):
-#         self.appOrGame = appOrGame
-#         self.appPicture = appPicture
-#         self.appName = appName
-#         self.appRating = appRating
-#         self.appDownloadLink = appDownloadLink
-#         self.appDescription = appDescription
-#         self.appCategory = appCategory
-#         self.appVersion = appVersion
-#         self.appRequirement = appRequirement
-#         self.appSize = appSize
+class AppOrGame:
+    def __init__(self, appOrGame, appPicture, appName, appRating, appDownloadLink, appDescription, appCategory, appVersion=None, appRequirement=None, appSize=None):
+        self.appOrGame = appOrGame
+        self.appPicture = appPicture
+        self.appName = appName
+        self.appRating = appRating
+        self.appDownloadLink = appDownloadLink
+        self.appDescription = appDescription
+        self.appCategory = appCategory
+        self.appVersion = appVersion
+        self.appRequirement = appRequirement
+        self.appSize = appSize
     
-#     def to_dict(self):
-#         return {
-#             'appOrGame': self.appOrGame,
-#             'appPicture': self.appPicture,
-#             'appName': self.appName,
-#             'appRating': self.appRating,
-#             'appDownloadLink': self.appDownloadLink,
-#             'appDescription': self.appDescription,
-#             'appCategory': self.appCategory,
-#             'appVersion': self.appVersion,
-#             'appRequirement': self.appRequirement,
-#             'appSize': self.appSize
-#         }
+    def to_dict(self):
+        return {
+            'appOrGame': self.appOrGame,
+            'appPicture': self.appPicture,
+            'appName': self.appName,
+            'appRating': self.appRating,
+            'appDownloadLink': self.appDownloadLink,
+            'appDescription': self.appDescription,
+            'appCategory': self.appCategory,
+            'appVersion': self.appVersion,
+            'appRequirement': self.appRequirement,
+            'appSize': self.appSize
+        }
 
-# new_data = AppOrGame(
-#     appOrGame="Game",
-#     appPicture="http://example.com/picture.jpg",
-#     appName="Super Fun Game",
-#     appRating="4.5",
-#     appDownloadLink="http://example.com/download",
-#     appDescription="An exciting adventure game.",
-#     appCategory="Adventure",
-#     appVersion="1.0.2",
-#     appRequirement="Android 4.0+",
-#     appSize="100MB"
-# )
+new_data = AppOrGame(
+    appOrGame="Game",
+    appPicture="http://example.com/picture.jpg",
+    appName="Super Fun Game",
+    appRating="4.5",
+    appDownloadLink="http://example.com/download",
+    appDescription="An exciting adventure game.",
+    appCategory="Adventure",
+    appVersion="1.0.2",
+    appRequirement="Android 4.0+",
+    appSize="100MB"
+)
 
-# print(new_data.to_dict())
-# print(new_data)
+print(new_data.__dict__)
+print(new_data.to_dict())
 
-# directory_path = r'\Users\richill rectin\Documents\doc\pyqt6 app\Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps'
+directory_path = r'\Users\richill rectin\Documents\doc\pyqt6 app\Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps'
 
-# filename = 'app_data.json'
+filename = 'app_data.json'
 
-# full_path = os.path.join(directory_path, filename)
+full_path = os.path.join(directory_path, filename)
 
-# with open(full_path, 'w') as file:
-#     json.dump(new_data.to_dict(), file, indent=4)
+with open(full_path, 'w') as file:
+    json.dump(new_data.to_dict(), file, indent=4)
 
 
 # Modify json file DONEEE
