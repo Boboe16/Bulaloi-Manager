@@ -40,7 +40,9 @@ class MainWindow(QMainWindow):
 
     @pyqtSlot()
     def on_checkbox_state_changed(self, app_name, state):
-        if state == Qt.CheckState.Checked:
+        print(f"the state is: {state}")
+        print(state == Qt.CheckState.Checked)
+        if Qt.CheckState(state) == Qt.CheckState.Checked:
             print("if is working")
             if app_name not in self.selected_apps:
                 self.selected_apps.append(app_name)
