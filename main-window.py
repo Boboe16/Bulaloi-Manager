@@ -7,7 +7,7 @@
 
 
 from PyQt6 import QtCore, QtGui, QtWidgets
-
+import json, os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -51,51 +51,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
         self.horizontalLayout_2.setSpacing(2)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.checkBox_21 = QtWidgets.QCheckBox(parent=self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.checkBox_21.sizePolicy().hasHeightForWidth())
-        self.checkBox_21.setSizePolicy(sizePolicy)
-        self.checkBox_21.setMinimumSize(QtCore.QSize(13, 0))
-        self.checkBox_21.setText("")
-        self.checkBox_21.setObjectName("checkBox_21")
-        self.horizontalLayout_2.addWidget(self.checkBox_21)
-        #
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-        self.horizontalLayout_4.setSpacing(2)
-        self.horizontalLayout_4.setObjectName("horizontalLayout_2")
-        self.checkBox_24 = QtWidgets.QCheckBox(parent=self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.checkBox_24.sizePolicy().hasHeightForWidth())
-        self.checkBox_24.setSizePolicy(sizePolicy)
-        self.checkBox_24.setMinimumSize(QtCore.QSize(13, 0))
-        self.checkBox_24.setText("")
-        self.checkBox_24.setObjectName("checkBox_24")
-        self.horizontalLayout_4.addWidget(self.checkBox_24)
-        self.pushButton_24 = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents_2)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton_24.sizePolicy().hasHeightForWidth())
-        self.pushButton_24.setSizePolicy(sizePolicy)
-        self.pushButton_24.setMinimumSize(QtCore.QSize(150, 0))
-        self.pushButton_24.setObjectName("pushButton_23")
-        self.horizontalLayout_4.addWidget(self.pushButton_24)
-        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
-        #
-        self.pushButton_23 = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.pushButton_23.sizePolicy().hasHeightForWidth())
-        self.pushButton_23.setSizePolicy(sizePolicy)
-        self.pushButton_23.setMinimumSize(QtCore.QSize(150, 0))
-        self.pushButton_23.setObjectName("pushButton_23")
-        self.horizontalLayout_2.addWidget(self.pushButton_23)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.verticalLayout.addLayout(self.verticalLayout_2)
         self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
@@ -111,32 +69,76 @@ class Ui_MainWindow(object):
         self.deleteButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.deleteButton.setObjectName("deleteButton")
         self.horizontalLayout.addWidget(self.deleteButton)
-        self.pushButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.pushButton_2 = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout.addWidget(self.pushButton_2)
-        self.pushButton_3 = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.horizontalLayout.addWidget(self.pushButton_3)
+        self.searchButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.searchButton.setObjectName("searchButton")
+        self.horizontalLayout.addWidget(self.searchButton)
+        self.refreshButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.refreshButton.setObjectName("refreshButton")
+        self.horizontalLayout.addWidget(self.refreshButton)
+        self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.saveButton.setObjectName("saveButton")
+        self.horizontalLayout.addWidget(self.saveButton)
         MainWindow.setCentralWidget(self.centralwidget)
+        self.iterateAppsAndRetranslate()
 
-        self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Bulaloi Manager"))
-        self.pushButton_23.setText(_translate("MainWindow", "App Name"))
-        self.pushButton_24.setText(_translate("MainWindow", "App Name"))
-        self.addButton.setText(_translate("MainWindow", "Add"))
-        self.deleteButton.setText(_translate("MainWindow", "Delete"))
-        self.pushButton.setToolTip(_translate("MainWindow", "<html><head/><body><p>sdfsdfsd</p></body></html>"))
-        self.pushButton.setText(_translate("MainWindow", "Search"))
-        self.pushButton_2.setText(_translate("MainWindow", "Refresh"))
-        self.pushButton_3.setText(_translate("MainWindow", "Save"))
+    def iterateAppsAndRetranslate(self):
+            listOfAppNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps')
+            listOfGameNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\games')
+            appsDir = r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps/'
+            gamesDir = r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\games/'
+            listOfDics = []
 
+            for Name in listOfAppNames:
+                with open(appsDir + Name, 'r') as file:
+                    data = json.load(file)
+                    listOfDics.append(data)
+            
+            for Name in listOfGameNames:
+                with open(gamesDir + Name, 'r') as file:
+                    data = json.load(file)
+                    listOfDics.append(data)
+            
+            for index, dic in enumerate(listOfDics):
+                self.scrollAreaWidgetContents = QtWidgets.QWidget()
+                self.horizontalLayout = QtWidgets.QHBoxLayout()
+                self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
+                self.horizontalLayout.setSpacing(2)
+                self.horizontalLayout.setObjectName(f"horizontalLayout_{index}")
+                self.checkBox = QtWidgets.QCheckBox(parent=self.scrollAreaWidgetContents)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Fixed)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.checkBox.sizePolicy().hasHeightForWidth())
+                self.checkBox.setSizePolicy(sizePolicy)
+                self.checkBox.setMinimumSize(QtCore.QSize(13, 0))
+                self.checkBox.setText("")
+                self.checkBox.setObjectName(f"checkBox_{index}")
+                self.horizontalLayout.addWidget(self.checkBox)
+                self.pushButton = QtWidgets.QPushButton(parent=self.scrollAreaWidgetContents)
+                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                sizePolicy.setHeightForWidth(self.pushButton.sizePolicy().hasHeightForWidth())
+                self.pushButton.setSizePolicy(sizePolicy)
+                self.pushButton.setMinimumSize(QtCore.QSize(150, 0))
+                self.pushButton.setObjectName(f"pushButton_{index}")
+                self.horizontalLayout.addWidget(self.pushButton)
+                self.verticalLayout.addLayout(self.horizontalLayout)
+                self.pushButton.clicked.connect(lambda: self.edit(dic['appName']))
+                print(dic['appName'])
+                _translate = QtCore.QCoreApplication.translate
+                self.pushButton.setText(_translate("MainWindow", dic['appName']))
+                MainWindow.setWindowTitle(_translate("MainWindow", "Bulaloi Manager"))
+                self.addButton.setText(_translate("MainWindow", "Add"))
+                self.deleteButton.setText(_translate("MainWindow", "Delete"))
+                self.searchButton.setText(_translate("MainWindow", "Search"))
+                self.refreshButton.setText(_translate("MainWindow", "Refresh"))
+                self.saveButton.setText(_translate("MainWindow", "Save"))
+        
+    def edit(self, appName=str):
+        print(appName)
 
 if __name__ == "__main__":
     import sys

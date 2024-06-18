@@ -1,20 +1,45 @@
-a = [5,10,3,7,6]
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QScrollArea, QVBoxLayout
+from PyQt6.QtCore import pyqtSlot
 
-b = [10,5,3,2,1,0]
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
 
-def sortToAscending(array):
-    y = len(array)
-    z = array
-    
-    for n in range(y):
-        if n == y - 1:
-            break
-        if z[n] > z[n+1]:
-            z[n+1], z[n] = z[n], z[n+1]
-        # else
-            
-            
-    return z
+        self.setWindowTitle("Dynamic Buttons in PyQt6")
 
-sortedArray = sortToAscending(a)
-print(sortedArray)
+        # Create a central widget and layout
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        layout = QVBoxLayout(central_widget)
+
+        # Create a scroll area
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        layout.addWidget(scroll_area)
+
+        # Create a widget and layout for the scroll area
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout(scroll_widget)
+        scroll_area.setWidget(scroll_widget)
+
+        # Add multiple buttons inside the scroll container
+        for i in range(5):  # Adjust the range as needed
+            button = QPushButton(f"Button {i}")
+            button.setObjectName(f"button_{i}")
+            scroll_layout.addWidget(button)
+
+            # Connect the button's signal to the slot with the correct argument
+            button.clicked.connect(self.create_slot(f"Button {i}"))
+
+    def create_slot(self, text):
+        return lambda: self.on_button_clicked(text)
+
+    @pyqtSlot()
+    def on_button_clicked(self, text):
+        print(f"Clicked: {text}")
+
+if __name__ == "__main__":
+    app = QApplication([])
+    window = MainWindow()
+    window.show()
+    app.exec()
