@@ -169,7 +169,7 @@ background-color: red;
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="searchButton">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;sdfsdfsd&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
