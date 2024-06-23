@@ -30,7 +30,8 @@ class CreateNewApp:
         self.appSize = appSize
 
 # Class to setup and handle the UI form
-class Edit_Form:
+class Add_Edit_Form(QtCore.QObject):
+    refreshSignal = pyqtSignal(bool)
     def setupUi(self, Form):
         # Set up the main form
         Form.setObjectName("Form")
@@ -56,16 +57,19 @@ class Edit_Form:
         self.appSize = self.addLineEdit(layout, "App Size")
 
         # Add the "Add" button
-        self.addButton = QtWidgets.QPushButton(Form)
-        self.addButton.setGeometry(QtCore.QRect(290, 360, 75, 24))
-        self.addButton.setText("Add")
-        self.addButton.clicked.connect(self.add)
+        self.addOrEditButton = QtWidgets.QPushButton(Form)
+        self.addOrEditButton.setGeometry(QtCore.QRect(290, 360, 75, 24))
+        self.addOrEditButton.setText("Add")
+        self.addOrEditButton.clicked.connect(self.add)
 
         # Retranslate the UI
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+        # Declare oldAppName attribute. its used to delete the old app after edit is saved, so there will be no duplicate apps
         self.oldAppName = None
+        # set the addOrEdit attribute to "add" so the add button will be displayed instead of edit
+        self.addOrEdit = "add"
 
     def updateInputs(self, app):
         # Update the input fields with the provided app data
@@ -79,7 +83,12 @@ class Edit_Form:
         self.appVersion.setText(app["appVersion"])
         self.appRequirement.setText(app["appRequirement"])
         self.appSize.setText(app["appSize"])
+        self.addOrEditButton.setText("Edit")
+        
+        # Once your app data is updated, save the oldAppName attribute so you can delete it later
         self.oldAppName = app["appName"]
+        # set the addOrEdit attribute to "edit" so the edit button will be displayed instead of add
+        self.addOrEdit = "edit"
         print("Signal worked")
 
     # Utility method to add a QLineEdit with a placeholder
@@ -119,11 +128,20 @@ class Edit_Form:
     def saveAppToFile(self, app):
         directory = r'.\Bulaloi-App-Development-Experiment\next-app\public\apps-games-data'
         directory += r'\games' if app.appOrGame == "Game" else r'\apps'
-        subprocess.run(['cd', directory, '&&', 'del', f'{self.oldAppName}.json'], shell=True, capture_output=True,)
+        print(self.oldAppName)
+        subprocess.run(['cd', directory, '&&', 'del', f'{self.oldAppName}.json'], shell=True, capture_output=True,) if self.addOrEdit == "edit" else print("No oldAppName found")
         full_path = os.path.join(directory, f"{app.appName}.json")
 
         with open(full_path, 'w') as file:
             json.dump(app.__dict__, file, indent=4)
+        
+        # Update the oldAppName attribute for future edits
+        self.oldAppName = app.appName
+
+        self.sendRefreshSignal()
+
+    def sendRefreshSignal(self):
+        self.refreshSignal.emit(True)
         
     # Method to set up the translations for the UI components
     def retranslateUi(self, Form):
@@ -189,9 +207,10 @@ class Ui_MainWindow(QMainWindow):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.addButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.addButton.setObjectName("addButton")
-        self.horizontalLayout.addWidget(self.addButton)
+        self.addOrEditButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.addOrEditButton.setObjectName("addOrEditButton")
+        self.horizontalLayout.addWidget(self.addOrEditButton)
+        self.addOrEditButton.clicked.connect(self.addApp)
         self.deleteButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.deleteButton.setObjectName("deleteButton")
         self.horizontalLayout.addWidget(self.deleteButton)
@@ -201,13 +220,43 @@ class Ui_MainWindow(QMainWindow):
         self.refreshButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.refreshButton.setObjectName("refreshButton")
         self.horizontalLayout.addWidget(self.refreshButton)
+        self.refreshButton.clicked.connect(self.refreshApps)
         self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.saveButton.setObjectName("saveButton")
         self.horizontalLayout.addWidget(self.saveButton)
         MainWindow.setCentralWidget(self.centralwidget)
-        self.iterateAppsAndRetranslate()
-        # self.EditWindow = Edit_Form()
+        
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        self.buttons = []
+        self.checkboxs = []
+        self.iterateApps()
+        self.retranslateUi(MainWindow)
+        
+    def refreshApps(self):
+        print("Refresh button clicked")
+
+        for button in self.buttons[:]:  # Iterate over a copy of the buttons list
+            if button in self.scrollAreaWidgetContents_2.findChildren(QtWidgets.QPushButton):
+                button.deleteLater()
+                self.buttons.remove(button)
+        for checkbox in self.checkboxs[:]:  # Iterate over a copy of the buttons list
+            if checkbox in self.scrollAreaWidgetContents_2.findChildren(QtWidgets.QCheckBox):
+                checkbox.deleteLater()
+                self.checkboxs.remove(checkbox)
+
+        self.iterateApps()
+    
+    def addApp(self):
+        print("Add button clicked")
+        self.EditWindow = QtWidgets.QWidget()
+        self.ui = Add_Edit_Form()
+        self.ui.setupUi(self.EditWindow)
+        self._translate = QtCore.QCoreApplication.translate
+        self.EditWindow.setWindowTitle(self._translate("MainWindow", "Bulaloi Manager"))
+        self.EditWindow.show()
+
+        self.ui.refreshSignal.connect(self.refreshApps)  # Connect the signal to the saveApp method of the Add_Edit_Form
 
     def createForSlotEdit(self, dict):
         return lambda: self.editApp(dict)
@@ -217,21 +266,22 @@ class Ui_MainWindow(QMainWindow):
         print(f"Clicked: {dict}")
         print("EditWindow opened")
         self.EditWindow = QtWidgets.QWidget()
-        self.ui = Edit_Form()
+        self.ui = Add_Edit_Form()
         self.ui.setupUi(self.EditWindow)
         self._translate = QtCore.QCoreApplication.translate
         self.EditWindow.setWindowTitle(self._translate("MainWindow", "Bulaloi Manager"))
         self.EditWindow.show()
         
         self.editSignal.connect(self.ui.updateInputs)  # Connect the signal to the updateInputs method of the EditWindow's UI
-        time.sleep(3)
+        time.sleep(1)
         self.sendDataToEditWindow(dict)
+        self.ui.refreshSignal.connect(self.refreshApps)
 
     def sendDataToEditWindow(self, dict):
         data = dict
         self.editSignal.emit(data)
 
-    def iterateAppsAndRetranslate(self):
+    def iterateApps(self):
             listOfAppNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps')
             listOfGameNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\games')
             appsDir = r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps/'
@@ -275,14 +325,21 @@ class Ui_MainWindow(QMainWindow):
                 self.horizontalLayout.addWidget(self.pushButton)
                 self.verticalLayout.addLayout(self.horizontalLayout)
                 self.pushButton.clicked.connect(self.createForSlotEdit(dic))
-                print(dic['appName'])
+
+                self.buttons.append(self.pushButton)
+                self.checkboxs.append(self.checkBox)
+
                 _translate = QtCore.QCoreApplication.translate
                 self.pushButton.setText(_translate("MainWindow", dic['appName']))
-                self.addButton.setText(_translate("MainWindow", "Add"))
-                self.deleteButton.setText(_translate("MainWindow", "Delete"))
-                self.searchButton.setText(_translate("MainWindow", "Search"))
-                self.refreshButton.setText(_translate("MainWindow", "Refresh"))
-                self.saveButton.setText(_translate("MainWindow", "Save"))
+                self.addOrEditButton.setText(_translate("MainWindow", "Add"))
+                
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        self.deleteButton.setText(_translate("MainWindow", "Delete"))
+        self.searchButton.setText(_translate("MainWindow", "Search"))
+        self.refreshButton.setText(_translate("MainWindow", "Refresh"))
+        self.saveButton.setText(_translate("MainWindow", "Save"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Bulaloi Manager"))
 
 def showMainWindow():
     if __name__ == "__main__":
@@ -291,8 +348,8 @@ def showMainWindow():
         MainWindow = QtWidgets.QMainWindow()
         ui = Ui_MainWindow()
         ui.setupUi(MainWindow)
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Bulaloi Manager"))
+        # _translate = QtCore.QCoreApplication.translate
+        # MainWindow.setWindowTitle(_translate("MainWindow", "Bulaloi Manager"))
         MainWindow.show()
         sys.exit(app.exec())
 
