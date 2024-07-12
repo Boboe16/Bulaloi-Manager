@@ -9,11 +9,12 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
+class Delete_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(412, 211)
+        Form.resize(412, 201)
         Form.setMinimumSize(QtCore.QSize(100, 100))
+        Form.setStyleSheet("background: gray;")
         self.label = QtWidgets.QLabel(parent=Form)
         self.label.setGeometry(QtCore.QRect(10, 20, 401, 111))
         self.label.setMinimumSize(QtCore.QSize(131, 0))
@@ -22,7 +23,7 @@ class Ui_Form(object):
 "")
         self.label.setObjectName("label")
         self.horizontalLayoutWidget = QtWidgets.QWidget(parent=Form)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(250, 120, 141, 71))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(250, 130, 158, 71))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -35,6 +36,7 @@ class Ui_Form(object):
         self.horizontalLayout.addWidget(self.pushButton_2)
 
         self.retranslateUi(Form)
+        self.pushButton_2.clicked.connect(Form.close) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
-    ui = Ui_Form()
+    ui = Delete_Form()
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec())

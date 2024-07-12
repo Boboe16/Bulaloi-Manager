@@ -27,14 +27,14 @@
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QLineEdit" name="lineEdit">
+     <widget class="QLineEdit" name="searchInput">
       <property name="placeholderText">
        <string>......</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="searchButton">
       <property name="text">
        <string>Search</string>
       </property>
