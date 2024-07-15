@@ -1,0 +1,12 @@
+{
+    "appOrGame": "Game",
+    "appPicture": "image url",
+    "appName": "game experiment",
+    "appRating": "5",
+    "appDownloadLink": "2",
+    "appDescription": "descriptive shit",
+    "appCategory": "Addons and mods",
+    "appVersion": "1.0",
+    "appRequirement": "8gb ram",
+    "appSize": "1000mb"
+}
