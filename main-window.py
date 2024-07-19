@@ -5,6 +5,57 @@ import json, os, subprocess, time
 
 
 
+class Save_Form(QtCore.QObject):
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(412, 184)
+        Form.setMinimumSize(QtCore.QSize(100, 100))
+        Form.setStyleSheet("background-color: gray;")
+        self.horizontalLayoutWidget = QtWidgets.QWidget(parent=Form)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(240, 140, 158, 31))
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.saveButton.setObjectName("saveButton")
+        self.horizontalLayout.addWidget(self.saveButton)
+        self.noButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.noButton.setObjectName("noButton")
+        self.horizontalLayout.addWidget(self.noButton)
+        self.commitMessage = QtWidgets.QTextEdit(parent=Form)
+        self.commitMessage.setGeometry(QtCore.QRect(30, 30, 361, 101))
+        self.commitMessage.setStyleSheet("background-color: white")
+        self.commitMessage.setObjectName("commitMessage")
+        self.saveButton.clicked.connect(lambda: self.save(self.commitMessage.toPlainText()))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
+        Form.setWindowIcon(icon)
+
+        self.retranslateUi(Form)
+        self.noButton.clicked.connect(Form.close) # type: ignore
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def save(self, commitMessage):
+        print(commitMessage)
+        directoryPath = r'.\Bulaloi-App-Development-Experiment/next-app'
+        fullPath = os.path.join(directoryPath)
+        print(fullPath)
+        command = subprocess.run(['cd', fullPath , '&&', 'git', 'add', '.', '&&', 'git', 'commit', '-m', f'"{commitMessage}"', '&&', 'git', 'push', 'origin', 'main'], shell=True, capture_output=True, text=True)
+        print(command.stdout)
+        print(command.returncode)
+        print(command.stderr)
+
+    def retranslateUi(self, Form):
+        _translate = QtCore.QCoreApplication.translate
+        Form.setWindowTitle(_translate("Form", "Bulaloi Manager"))
+        self.saveButton.setText(_translate("Form", "Save"))
+        self.noButton.setText(_translate("Form", "No"))
+        self.commitMessage.setPlaceholderText(_translate("Form", "Commit message..."))
+
+
+
+
 class Search_Form(QtCore.QObject):
     searchSignal = pyqtSignal(str)
     def setupUi(self, Form):
@@ -24,12 +75,17 @@ class Search_Form(QtCore.QObject):
         self.searchButton.setObjectName("searchButton")
         self.horizontalLayout.addWidget(self.searchButton)
         self.searchButton.clicked.connect(self.search)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
+        Form.setWindowIcon(icon)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def search(self):
-        self.searchSignal.emit(self.searchInput.text())
+        # Gives the search input text to the Main Window, 
+        # then Main Window will use it to filter the apps that has the text that Search Window gaved
+        self.searchSignal.emit(self.searchInput.text()) 
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
@@ -68,6 +124,9 @@ class Delete_Form(QtCore.QObject):
         self.pushButton_2.setObjectName("pushButton_2")
         self.horizontalLayout.addWidget(self.pushButton_2)
         self.pushButton.clicked.connect(self.deleteApps) # type: ignore
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
+        Form.setWindowIcon(icon)
 
         self.retranslateUi(Form)
         self.pushButton_2.clicked.connect(Form.close) # type: ignore
@@ -90,7 +149,7 @@ class Delete_Form(QtCore.QObject):
 
 # Class to represent the app/game details
 class CreateNewApp:
-    def __init__(self, appOrGame, appPicture, appName, appRating, appDownloadLink, appDescription, appCategory, appVersion=None, appRequirement=None, appSize=None):
+    def __init__(self, appOrGame, appPicture, appName, appRating, appDownloadLink, appDescription, appCategory, appVersion=None, appRequirement=None, appSize=None, appDownloads=None):
         self.appOrGame = appOrGame
         self.appPicture = appPicture
         self.appName = appName
@@ -101,6 +160,7 @@ class CreateNewApp:
         self.appVersion = appVersion
         self.appRequirement = appRequirement
         self.appSize = appSize
+        self.appDownloads = appDownloads
 
 # Class to setup and handle the UI form
 class Add_Edit_Form(QtCore.QObject):
@@ -124,10 +184,11 @@ class Add_Edit_Form(QtCore.QObject):
         self.appRating = self.addLineEdit(layout, "App Rating 1 to 5")
         self.appDownloadLink = self.addLineEdit(layout, "App Download Link")
         self.appDescription = self.addLineEdit(layout, "App Description")
-        self.appCategory = self.addComboBox(layout, ["Game Category", "Role-playing", "FPS", "Adventure", "Action", "Casual", "Arcade", "App Category", "Phone editor", "Task-app Management", "Video player & Editor", "Music", "Productivity"])
+        self.appCategory = self.addComboBox(layout, ["Game Category", "Role-playing", "FPS", "Adventure", "Action", "Casual", "Arcade", "Addons and mods", "App Category", "Phone editor", "Task-app Management", "Video player & Editor", "Music", "Productivity"])
         self.appVersion = self.addLineEdit(layout, "App Version")
         self.appRequirement = self.addLineEdit(layout, "App Requirement")
         self.appSize = self.addLineEdit(layout, "App Size")
+        self.appDownloads = self.addLineEdit(layout, "App Downloads")
 
         # Add the "Add" button
         self.addOrEditButton = QtWidgets.QPushButton(Form)
@@ -156,6 +217,7 @@ class Add_Edit_Form(QtCore.QObject):
         self.appVersion.setText(app["appVersion"])
         self.appRequirement.setText(app["appRequirement"])
         self.appSize.setText(app["appSize"])
+        self.appDownloads.setText(app["appDownloads"])
         self.addOrEditButton.setText("Edit")
         
         # Once your app data is updated, save the oldAppName attribute so you can delete it later
@@ -219,6 +281,9 @@ class Add_Edit_Form(QtCore.QObject):
     # Method to set up the translations for the UI components
     def retranslateUi(self, Form):
         Form.setWindowTitle(QtCore.QCoreApplication.translate("Form", "Add"))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
+        Form.setWindowIcon(icon)
 
 
 
@@ -299,6 +364,7 @@ class Ui_MainWindow(QMainWindow):
         self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.saveButton.setObjectName("saveButton")
         self.horizontalLayout.addWidget(self.saveButton)
+        self.saveButton.clicked.connect(self.showSaveWindow)
         MainWindow.setCentralWidget(self.centralwidget)
         
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -315,7 +381,16 @@ class Ui_MainWindow(QMainWindow):
 
         self.iterateApps(self.listOfAppDicsToIterate)
         self.retranslateUi(MainWindow)
-        
+    
+    def showSaveWindow(self):
+        print("Save Window opened")
+        self.SaveWindow = QtWidgets.QWidget()
+        self.ui = Save_Form()
+        self.ui.setupUi(self.SaveWindow)
+        self._translate = QtCore.QCoreApplication.translate
+        self.SaveWindow.setWindowTitle(self._translate("MainWindow", "Bulaloi Manager"))
+        self.SaveWindow.show()
+
     def showSearchWindow(self):
         print("Search Window opened")
         self.SearchWindow = QtWidgets.QWidget()
@@ -325,7 +400,7 @@ class Ui_MainWindow(QMainWindow):
         self.SearchWindow.setWindowTitle(self._translate("MainWindow", "Bulaloi Manager"))
         self.SearchWindow.show()
         
-        self.ui.searchSignal.connect(self.searchApps)
+        self.ui.searchSignal.connect(self.searchApps) 
 
     def searchApps(self, data):
         print(f"Searching for: {data}")
@@ -339,7 +414,7 @@ class Ui_MainWindow(QMainWindow):
         print(filteredAppDicsToIterate)
 
         self.resetAppsList()
-        self.iterateApps(filteredAppDicsToIterate, isItNotFiltered=False)
+        self.iterateApps(filteredAppDicsToIterate, displayNoneFilteredApps=False)
 
     def resetAppsList(self):
         for button in self.buttons[:]:  # Iterate over a copy of the buttons list
@@ -355,7 +430,7 @@ class Ui_MainWindow(QMainWindow):
         print("Refresh button clicked")
         self.resetAppsList()
         self.listOfAppDicsToIterate.clear()
-        self.iterateApps(self.listOfAppDicsToIterate, isItNotFiltered=True)
+        self.iterateApps(self.listOfAppDicsToIterate, displayNoneFilteredApps=True)
     
     def addApp(self):
         print("Add button clicked")
@@ -438,13 +513,13 @@ class Ui_MainWindow(QMainWindow):
                 # print("else is working but not its if")
         # print(f"Selected apps to delete: {self.toDeleteApps}")
 
-    def iterateApps(self, listToIterate, isItNotFiltered=bool):
+    def iterateApps(self, listToIterate, displayNoneFilteredApps=bool):
             listOfAppNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps')
             listOfGameNames = os.listdir(r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\games')
             appsDir = r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\apps/'
             gamesDir = r'./Bulaloi-App-Development-Experiment\next-app\public\apps-games-data\games/'
 
-            if isItNotFiltered:
+            if displayNoneFilteredApps: # If displayNoneFilteredApps is `true` we will display the all the apps, if its `false` we will display the filtered apps
                 for Name in listOfAppNames:
                     with open(appsDir + Name, 'r') as file:
                         data = json.load(file)

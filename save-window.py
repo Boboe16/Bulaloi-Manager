@@ -9,7 +9,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 import subprocess, os
 
-class Ui_Form(object):
+class Save_Form(QtCore.QObject):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(412, 184)
@@ -32,7 +32,9 @@ class Ui_Form(object):
         self.commitMessage.setStyleSheet("background-color: white")
         self.commitMessage.setObjectName("commitMessage")
         self.saveButton.clicked.connect(lambda: self.save(self.commitMessage.toPlainText()))
-        self.noButton.clicked.connect(self.close)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
+        Form.setWindowIcon(icon)
 
         self.retranslateUi(Form)
         self.noButton.clicked.connect(Form.close) # type: ignore
@@ -48,12 +50,9 @@ class Ui_Form(object):
         print(command.returncode)
         print(command.stderr)
 
-    def close(self):
-        Form.close()
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "Bulaloi Manager"))
         self.saveButton.setText(_translate("Form", "Save"))
         self.noButton.setText(_translate("Form", "No"))
         self.commitMessage.setPlaceholderText(_translate("Form", "Commit message..."))
@@ -63,7 +62,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QWidget()
-    ui = Ui_Form()
+    ui = Save_Form()
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec())
