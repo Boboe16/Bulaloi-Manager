@@ -353,7 +353,7 @@ class Ui_MainWindow(QMainWindow):
 
         # background: #333333; color: #808080;
 
-        self.optionButtonStyle = """
+        self.styleForLowerButtons = """
             QPushButton {
                 background: #333333; 
                 color: #808080;
@@ -361,33 +361,32 @@ class Ui_MainWindow(QMainWindow):
             }
             QPushButton:hover {
                 color: white;
-                transition: color 0.3s;
             }
         """
 
         self.addOrEditButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.addOrEditButton.setObjectName("addOrEditButton")
-        self.addOrEditButton.setStyleSheet(self.optionButtonStyle)
+        self.addOrEditButton.setStyleSheet(self.styleForLowerButtons)
         self.horizontalLayout.addWidget(self.addOrEditButton)
         self.addOrEditButton.clicked.connect(self.addApp)
         self.deleteButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.deleteButton.setObjectName("deleteButton")
-        self.deleteButton.setStyleSheet(self.optionButtonStyle)
+        self.deleteButton.setStyleSheet(self.styleForLowerButtons)
         self.horizontalLayout.addWidget(self.deleteButton)
         self.deleteButton.clicked.connect(self.showDeleteWindow)
         self.searchButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.searchButton.setObjectName("searchButton")
-        self.searchButton.setStyleSheet(self.optionButtonStyle)
+        self.searchButton.setStyleSheet(self.styleForLowerButtons)
         self.horizontalLayout.addWidget(self.searchButton)
         self.searchButton.clicked.connect(self.showSearchWindow)
         self.refreshButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.refreshButton.setObjectName("refreshButton")
-        self.refreshButton.setStyleSheet(self.optionButtonStyle)
+        self.refreshButton.setStyleSheet(self.styleForLowerButtons)
         self.horizontalLayout.addWidget(self.refreshButton)
         self.refreshButton.clicked.connect(self.refreshApps)
         self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.saveButton.setObjectName("saveButton")
-        self.saveButton.setStyleSheet(self.optionButtonStyle)
+        self.saveButton.setStyleSheet(self.styleForLowerButtons)
         self.horizontalLayout.addWidget(self.saveButton)
         self.saveButton.clicked.connect(self.showSaveWindow)
         MainWindow.setCentralWidget(self.centralwidget)
