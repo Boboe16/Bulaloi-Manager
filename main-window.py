@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtGui, QtWidgets 
+from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtCore import pyqtSlot, pyqtSignal, Qt
 from PyQt6.QtWidgets import QMainWindow
 import json, os, subprocess, time
@@ -10,7 +10,7 @@ class Save_Form(QtCore.QObject):
         Form.setObjectName("Form")
         Form.resize(412, 184)
         Form.setMinimumSize(QtCore.QSize(100, 100))
-        Form.setStyleSheet("background-color: gray;")
+        Form.setStyleSheet("background-color: #D9D9D9;")
         self.horizontalLayoutWidget = QtWidgets.QWidget(parent=Form)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(240, 140, 158, 31))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -28,6 +28,7 @@ class Save_Form(QtCore.QObject):
         self.commitMessage.setStyleSheet("background-color: white")
         self.commitMessage.setObjectName("commitMessage")
         self.saveButton.clicked.connect(lambda: self.save(self.commitMessage.toPlainText()))
+        self.saveButton.clicked.connect(Form.close)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
         Form.setWindowIcon(icon)
@@ -61,7 +62,7 @@ class Search_Form(QtCore.QObject):
     def setupUi(self, Form):
         Form.setObjectName("Form")
         Form.resize(377, 88)
-        Form.setStyleSheet("background: gray;")
+        Form.setStyleSheet("background: #D9D9D9;")
         self.horizontalLayoutWidget = QtWidgets.QWidget(parent=Form)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 20, 341, 41))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -75,6 +76,7 @@ class Search_Form(QtCore.QObject):
         self.searchButton.setObjectName("searchButton")
         self.horizontalLayout.addWidget(self.searchButton)
         self.searchButton.clicked.connect(self.search)
+        self.searchButton.clicked.connect(Form.close)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
         Form.setWindowIcon(icon)
@@ -103,7 +105,7 @@ class Delete_Form(QtCore.QObject):
         Form.setObjectName("Form")
         Form.resize(412, 201)
         Form.setMinimumSize(QtCore.QSize(100, 100))
-        Form.setStyleSheet("background: gray;")
+        Form.setStyleSheet("background: #D9D9D9;")
         self.label = QtWidgets.QLabel(parent=Form)
         self.label.setGeometry(QtCore.QRect(10, 20, 401, 111))
         self.label.setMinimumSize(QtCore.QSize(131, 0))
@@ -117,19 +119,20 @@ class Delete_Form(QtCore.QObject):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.pushButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.pushButton.setObjectName("pushButton")
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.pushButton_2 = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout.addWidget(self.pushButton_2)
-        self.pushButton.clicked.connect(self.deleteApps) # type: ignore
+        self.yesButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.yesButton.setObjectName("pushButton")
+        self.horizontalLayout.addWidget(self.yesButton)
+        self.noButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
+        self.noButton.setObjectName("noButton")
+        self.horizontalLayout.addWidget(self.noButton)
+        self.yesButton.clicked.connect(self.deleteApps)
+        self.yesButton.clicked.connect(Form.close)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
         Form.setWindowIcon(icon)
 
         self.retranslateUi(Form)
-        self.pushButton_2.clicked.connect(Form.close) # type: ignore
+        self.noButton.clicked.connect(Form.close) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def deleteApps(self):
@@ -139,8 +142,8 @@ class Delete_Form(QtCore.QObject):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:26pt;\">Are you sure you want to</span></p><p><span style=\" font-size:26pt;\"> delete all this apps?</span></p></body></html>"))
-        self.pushButton.setText(_translate("Form", "Yes"))
-        self.pushButton_2.setText(_translate("Form", "No"))
+        self.yesButton.setText(_translate("Form", "Yes"))
+        self.noButton.setText(_translate("Form", "No"))
         QtCore.QMetaObject.connectSlotsByName(Form)
 
 
@@ -169,7 +172,7 @@ class Add_Edit_Form(QtCore.QObject):
         # Set up the main form
         Form.setObjectName("Form")
         Form.resize(375, 390)
-        Form.setStyleSheet("background: gray;")
+        Form.setStyleSheet("background: #D9D9D9;")
 
         # Create a layout widget
         layoutWidget = QtWidgets.QWidget(Form)
@@ -195,6 +198,7 @@ class Add_Edit_Form(QtCore.QObject):
         self.addOrEditButton.setGeometry(QtCore.QRect(290, 360, 75, 24))
         self.addOrEditButton.setText("Add")
         self.addOrEditButton.clicked.connect(self.add)
+        self.addOrEditButton.clicked.connect(Form.close)
 
         # Retranslate the UI
         self.retranslateUi(Form)
@@ -253,7 +257,8 @@ class Add_Edit_Form(QtCore.QObject):
             appCategory=self.appCategory.currentText(),
             appVersion=self.appVersion.text(),
             appRequirement=self.appRequirement.text(),
-            appSize=self.appSize.text()
+            appSize=self.appSize.text(),
+            appDownloads=self.appDownloads.text()
         )
         
         # Save the new app data to a JSON file
@@ -304,7 +309,7 @@ class Ui_MainWindow(QMainWindow):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("B-icon.png"), QtGui.QIcon.Mode.Selected, QtGui.QIcon.State.On)
         MainWindow.setWindowIcon(icon)
-        MainWindow.setStyleSheet("background: gray;")
+        MainWindow.setStyleSheet("background: #D9D9D9;")
         self.centralwidget = QtWidgets.QWidget(parent=MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.scrollArea_2 = QtWidgets.QScrollArea(parent=self.centralwidget)
@@ -345,24 +350,44 @@ class Ui_MainWindow(QMainWindow):
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
+
+        # background: #333333; color: #808080;
+
+        self.optionButtonStyle = """
+            QPushButton {
+                background: #333333; 
+                color: #808080;
+                border: black
+            }
+            QPushButton:hover {
+                color: white;
+                transition: color 0.3s;
+            }
+        """
+
         self.addOrEditButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.addOrEditButton.setObjectName("addOrEditButton")
+        self.addOrEditButton.setStyleSheet(self.optionButtonStyle)
         self.horizontalLayout.addWidget(self.addOrEditButton)
         self.addOrEditButton.clicked.connect(self.addApp)
         self.deleteButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.deleteButton.setObjectName("deleteButton")
+        self.deleteButton.setStyleSheet(self.optionButtonStyle)
         self.horizontalLayout.addWidget(self.deleteButton)
         self.deleteButton.clicked.connect(self.showDeleteWindow)
         self.searchButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.searchButton.setObjectName("searchButton")
+        self.searchButton.setStyleSheet(self.optionButtonStyle)
         self.horizontalLayout.addWidget(self.searchButton)
         self.searchButton.clicked.connect(self.showSearchWindow)
         self.refreshButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.refreshButton.setObjectName("refreshButton")
+        self.refreshButton.setStyleSheet(self.optionButtonStyle)
         self.horizontalLayout.addWidget(self.refreshButton)
         self.refreshButton.clicked.connect(self.refreshApps)
         self.saveButton = QtWidgets.QPushButton(parent=self.horizontalLayoutWidget)
         self.saveButton.setObjectName("saveButton")
+        self.saveButton.setStyleSheet(self.optionButtonStyle)
         self.horizontalLayout.addWidget(self.saveButton)
         self.saveButton.clicked.connect(self.showSaveWindow)
         MainWindow.setCentralWidget(self.centralwidget)
@@ -558,7 +583,7 @@ class Ui_MainWindow(QMainWindow):
                 self.horizontalLayout.addWidget(self.pushButton)
                 self.verticalLayout.addLayout(self.horizontalLayout)
                 self.pushButton.clicked.connect(self.createForSlotEdit(dic))
-
+                self.pushButton.setStyleSheet("background: gray;")
                 # Append the newly created pushButton to the buttons list
                 self.buttons.append(self.pushButton)
 
@@ -589,8 +614,9 @@ def showMainWindow():
 
 if os.path.exists('./Bulaloi-App-Development-Experiment'):
     print("Repo already cloned, skipping clone step")
+    subprocess.run(['cd', 'Bulaloi-App-Development-Experiment/next-app', '&&', 'git', 'pull'], shell=True, capture_output=True, text=True)
     showMainWindow()
 else:
     print("Cloning repo...")
-    subprocess.run(['git', 'clone', 'https://github.com/Boboe16/Bulaloi-App-Development-Experiment', '&&', 'cd', 'Bulaloi-App-Development-Experiment/next-app'], shell=True, capture_output=True, text=True)
+    subprocess.run(['git', 'clone', 'https://github.com/Boboe16/Bulaloi-App-Development-Experiment'], shell=True, capture_output=True, text=True)
     showMainWindow()
